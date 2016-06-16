@@ -22,7 +22,7 @@ Project's build.gradle
 
 ```groovy
 dependencies {
-    compile "com.joxad.pictureutils.lib:$currentVersion"
+    compile "com.joxad.pictureutils:lib:$currentVersion"
 }
 ```
 
@@ -35,6 +35,11 @@ For now in the activity where you need it
 ```groovy
  new PictureUtils.Builder().context(this).build();
      
+ ```
+ 
+ Manifest (I need the permission to write the file)
+ ```
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
  ```
 
 To handle the result you need to add :
