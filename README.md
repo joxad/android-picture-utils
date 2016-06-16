@@ -22,60 +22,70 @@ Project's build.gradle
 
 ```groovy
 dependencies {
-    compile "com.joxad.easydatabinding.lib:$currentVersion"
+    compile "com.joxad.pictureutils.lib:$currentVersion"
 }
 ```
 
 # Utilisation
 
-In whatever class with Context (better in your AppApplication class). 
+For now in the activity where you need it 
 
-## Create EasyGCM
+## Create PictureUtils
  
 ```groovy
-    new EasyGcm.Builder().context(this).senderId(R.string.app_senderid).enableLog(true).build();
+ new PictureUtils.Builder().context(this).build();
+     
+ ```
+
+To handle the result you need to add :
+```
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        PictureUtils.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 ```
 
-
-## Get Token
+## Get Image
  
   
 ```java
-EasyGcm.setTokenListener(new ITokenListener() {
-    @Override
-        public void onReceived(String token) {
-    }
-});
+ PictureUtils.setListener(new PictureUtils.Listener() {
+            @Override
+            public void onImageSelected(Uri fileUri) {
+                imageView.setImageURI(fileUri);
+            }
+        });
            
 ```
 
-## Notification of Push
+## Permissions
 ```java
 
-EasyGcm.setPushListener(new IPushListener() {
-    @Override
-    public void onReceive(Push push) {
+
+    public void onClick(View view) {
+        PictureUtils.askPermission(new PictureUtils.IPermission() {
+            @Override
+            public void onPermissionAccepted() {
+                PictureUtils.showDialogPicker("Title", "Take Photo", "From Gallery", "Cancel");
+            }
+
+            @Override
+            public void onPermissionDenied() {
+
+                Log.d(TAG, "Denied permission");
+            }
+        });
     }
-});
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        PictureUtils.onRequestPermissionsResults(requestCode, permissions, grantResults);
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
 
 ```
 
-## Show an Android Notification 
-
-```java
-EasyNotification.show(1,EasyNotification.generate(null,"Title",R.drawable.common_ic_googleplayservices,"Message","SummaryText",true));
-```
-
-## Test your push
-
-This website is usefull to easyly test : http://apns-gcm.bryantan.info/
-
-Just put your sender key from console developer , and your device token (visible in the logs).
-
-## ToDO
-
-- Add Rx support
-- 
 
 #Contribution 
 
