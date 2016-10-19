@@ -23,6 +23,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -33,6 +34,7 @@ import java.util.Locale;
  * {@link PictureUtils} is an helper to take picture and write it to the external storage handling the Marshmallow permissions
  */
 public class PictureUtils {
+    static String mCurrentPhotoPath;
 
 
     private static final int PERMISSION_WRITE_STORAGE = 1337;
@@ -65,14 +67,6 @@ public class PictureUtils {
      * ------------ Helper Methods ----------------------
      * */
 
-    /**
-     * Creating file uri to store image/video
-     */
-    public static Uri getOutputMediaFileUri(int type) {
-        Uri photoURI = FileProvider.getUriForFile(activity,
-                activity.getApplicationContext().getPackageName() + ".provider", getOutputMediaFile(type));
-        return photoURI;
-    }
 
 
     /***
@@ -98,49 +92,51 @@ public class PictureUtils {
         builder.show();*/
     }
 
+    private static File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DCIM), "Camera");
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
 
-    /**
-     * returning image / video
-     */
-    private static File getOutputMediaFile(int type) {
-        // External sdcard location
-        File mediaStorageDir = new File(
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-                IMAGE_DIRECTORY_NAME);
-
-        // Create the storage directory if it does not exist
-        if (!mediaStorageDir.exists()) {
-            if (!mediaStorageDir.mkdirs()) {
-                Log.d(IMAGE_DIRECTORY_NAME, "Oops! Failed create" + IMAGE_DIRECTORY_NAME + " directory");
-                return null;
-            }
-        }
-        // Create a media file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-        File mediaFile;
-        if (type == MEDIA_TYPE_IMAGE) {
-            mediaFile = new File(mediaStorageDir.getPath() + File.separator + "IMG_" + timeStamp + ".jpg");
-        } else {
-            return null;
-        }
-        return mediaFile;
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+        return image;
     }
 
     /****
      * Call the
      */
     protected static void takePhoto() {
+        File photoFile = null;
+        try {
+            photoFile = createImageFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (photoFile==null)return;
+        fileUri = FileProvider.getUriForFile(activity,
+                activity.getPackageName() + ".provider",
+                photoFile);
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        fileUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE);
+
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+
 
         List<ResolveInfo> resInfoList = activity.getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
         for (ResolveInfo resolveInfo : resInfoList) {
             String packageName = resolveInfo.activityInfo.packageName;
             activity.grantUriPermission(packageName, fileUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
         }
+
         activity.startActivityForResult(intent, RQ_TAKE);
     }
 
