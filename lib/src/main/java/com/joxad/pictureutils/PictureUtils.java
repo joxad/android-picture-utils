@@ -15,6 +15,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
@@ -65,7 +66,9 @@ public class PictureUtils {
      * Creating file uri to store image/video
      */
     public static Uri getOutputMediaFileUri(int type) {
-        return Uri.fromFile(getOutputMediaFile(type));
+        Uri photoURI = FileProvider.getUriForFile(activity,
+                activity.getApplicationContext().getPackageName() + ".provider", getOutputMediaFile(type));
+        return photoURI;
     }
 
 
@@ -126,6 +129,7 @@ public class PictureUtils {
     protected static void takePhoto() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         fileUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
         activity.startActivityForResult(intent, RQ_TAKE);
     }
