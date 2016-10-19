@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ImageView
+        android:id="@+id/iv_picto"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_picker_height" />
+
+    <TextView
+        android:id="@+id/tv_label"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/item_picker_height" />
+</merge>

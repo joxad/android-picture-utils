@@ -10,7 +10,9 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -37,7 +39,7 @@ public class PictureUtils {
 
     public static final int MEDIA_TYPE_IMAGE = 1;
     private static final String IMAGE_DIRECTORY_NAME = "pictures";
-    private static Activity activity;
+    private static FragmentActivity activity;
 
     private static Listener listener;
     private static IPermission iPermission;
@@ -47,7 +49,7 @@ public class PictureUtils {
      *
      * @param activity
      */
-    private static void init(Activity activity) {
+    private static void init(FragmentActivity activity) {
         PictureUtils.activity = activity;
     }
     /**
@@ -61,10 +63,15 @@ public class PictureUtils {
         return Uri.fromFile(getOutputMediaFile(type));
     }
 
+
     /***
      *
      */
     public static void showDialogPicker(String title, String takePhotoOption, String pickPhotoOption, String cancel) {
+
+        BottomSheetDialogFragment bottomSheetDialogFragment = new PictureDialogChooserFragment();
+        bottomSheetDialogFragment.show(activity.getSupportFragmentManager(), bottomSheetDialogFragment.getTag());
+
         final CharSequence[] items = {takePhotoOption, pickPhotoOption, cancel};
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle(title);
@@ -234,14 +241,14 @@ public class PictureUtils {
      */
     public static class Builder {
 
-        private Activity activity;
+        private FragmentActivity activity;
 
         /**
          * Set the Context used to instantiate the EasyGcm
          *
          * @param context the application context
          */
-        public Builder context(@NonNull final Activity context) {
+        public Builder context(@NonNull final FragmentActivity context) {
             activity = context;
             return this;
         }
