@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">PictureUtils</string>
+    <string name="pick_from_gallery">Gallery</string>
+    <string name="take_photo">take</string>
 </resources>

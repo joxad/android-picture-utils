@@ -13,9 +13,11 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import java.io.File;
@@ -39,18 +41,21 @@ public class PictureUtils {
 
     public static final int MEDIA_TYPE_IMAGE = 1;
     private static final String IMAGE_DIRECTORY_NAME = "pictures";
-    private static FragmentActivity activity;
+    private static Activity activity;
 
     private static Listener listener;
     private static IPermission iPermission;
+    private static FragmentManager fragmentManager;
 
     /***
      * Init with the activity needed
      *
      * @param activity
+     * @param fragmentManager
      */
-    private static void init(FragmentActivity activity) {
+    private static void init(Activity activity, FragmentManager fragmentManager) {
         PictureUtils.activity = activity;
+        PictureUtils.fragmentManager = fragmentManager;
     }
     /**
      * ------------ Helper Methods ----------------------
@@ -69,10 +74,10 @@ public class PictureUtils {
      */
     public static void showDialogPicker(String title, String takePhotoOption, String pickPhotoOption, String cancel) {
 
-        BottomSheetDialogFragment bottomSheetDialogFragment = new PictureDialogChooserFragment();
-        bottomSheetDialogFragment.show(activity.getSupportFragmentManager(), bottomSheetDialogFragment.getTag());
+        PictureDialogChooserFragment bottomSheetDialogFragment = PictureDialogChooserFragment.newInstance(title);
+        bottomSheetDialogFragment.show(fragmentManager, bottomSheetDialogFragment.getTag());
 
-        final CharSequence[] items = {takePhotoOption, pickPhotoOption, cancel};
+       /* final CharSequence[] items = {takePhotoOption, pickPhotoOption, cancel};
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle(title);
         builder.setItems(items, (dialog, item) -> {
@@ -84,7 +89,7 @@ public class PictureUtils {
                 dialog.dismiss();
             }
         });
-        builder.show();
+        builder.show();*/
     }
 
 
@@ -118,7 +123,7 @@ public class PictureUtils {
     /****
      * Call the
      */
-    public static void takePhoto() {
+    protected static void takePhoto() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         fileUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
@@ -128,7 +133,7 @@ public class PictureUtils {
     /***
      *
      */
-    private static void pickPhoto() {
+    protected static void pickPhoto() {
         Intent intent = new Intent(
                 Intent.ACTION_PICK,
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -241,24 +246,31 @@ public class PictureUtils {
      */
     public static class Builder {
 
-        private FragmentActivity activity;
-
-        /**
-         * Set the Context used to instantiate the EasyGcm
-         *
-         * @param context the application context
-         */
-        public Builder context(@NonNull final FragmentActivity context) {
-            activity = context;
-            return this;
-        }
+        private Activity activity;
+        private FragmentManager fragmentManager;
 
 
         /**
          * @throws RuntimeException if Context has not been set.
          */
         public void build() {
-            PictureUtils.init(activity);
+            PictureUtils.init(activity, fragmentManager);
+        }
+
+        public Builder supportFragmentManager(FragmentManager supportFragmentManager) {
+            fragmentManager = supportFragmentManager;
+            return this;
+        }
+
+
+        /**
+         * Set the Context used to instantiate the EasyGcm
+         *
+         * @param context the application context
+         */
+        public Builder context(@NonNull final Activity context) {
+            activity = context;
+            return this;
         }
     }
 

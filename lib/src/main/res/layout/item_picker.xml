@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <ImageView
         android:id="@+id/iv_picto"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/item_picker_height" />
+        android:layout_width="@dimen/item_picker_height"
+        android:layout_height="@dimen/item_picker_height"
+        android:layout_margin="@dimen/small_margin" />
 
     <TextView
         android:id="@+id/tv_label"
+        android:gravity="center_vertical"
+        tools:text="test"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/item_picker_height" />
+        android:layout_height="@dimen/item_picker_height"
+        android:layout_margin="@dimen/small_margin" />
 </merge>

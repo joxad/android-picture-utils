@@ -24,7 +24,7 @@ public class ActivityMain extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         imageView = (ImageView) findViewById(R.id.iv_picture);
-        new PictureUtils.Builder().context(this).build();
+        new PictureUtils.Builder().context(this).supportFragmentManager(getSupportFragmentManager()).build();
         PictureUtils.setListener(new PictureUtils.Listener() {
             @Override
             public void onImageSelected(Uri fileUri) {

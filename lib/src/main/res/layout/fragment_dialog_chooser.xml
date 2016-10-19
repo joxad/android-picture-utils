@@ -5,19 +5,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-    <com.joxad.pictureutils.ItemPicker
-        android:id="@+id/item_take"
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_margin="@dimen/small_margin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <com.joxad.pictureutils.ItemPicker
-        android:id="@+id/item_pick"
+        android:id="@+id/item_take"
+        android:layout_margin="@dimen/small_margin"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
+        android:layout_height="wrap_content"
+        app:ip_label="@string/take_photo"
+        app:ip_icon="@drawable/ic_camera"/>
 
     <com.joxad.pictureutils.ItemPicker
-        android:id="@+id/item_cancel"
+        android:id="@+id/item_pick"
+        android:layout_margin="@dimen/small_margin"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        app:ip_label="@string/pick_from_gallery"
+        app:ip_icon="@drawable/ic_collections"/>
+
 </LinearLayout>

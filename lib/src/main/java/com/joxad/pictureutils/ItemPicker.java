@@ -42,8 +42,8 @@ public class ItemPicker extends LinearLayout {
         String title = "";
         int image;
         try {
-            title = a.getString(R.styleable.ItemPicker_label);
-            image = a.getInteger(R.styleable.ItemPicker_icon, 0);
+            title = a.getString(R.styleable.ItemPicker_ip_label);
+            image = a.getResourceId(R.styleable.ItemPicker_ip_icon, 0);
         } finally {
             a.recycle();
         }
